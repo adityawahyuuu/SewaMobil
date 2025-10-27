@@ -1,0 +1,202 @@
+﻿@model IEnumerable<SewaMobil.Models.Rental>
+
+@{
+    ViewBag.Title = "Daftar Penyewaan";
+}
+
+<h2>Daftar Penyewaan</h2>
+
+<div class="filter-section">
+    @using (Html.BeginForm("Rentals", "Admin", FormMethod.Get))
+    {
+        <label for="status">Filter Status:</label>
+        <select name="status" id="status" onchange="this.form.submit()">
+            <option value="">Semua Status</option>
+            <option value="Active" @(Request.QueryString["status"] == "Active" ? "selected" : "")>Active</option>
+            <option value="Completed" @(Request.QueryString["status"] == "Completed" ? "selected" : "")>Completed</option>
+            <option value="Cancelled" @(Request.QueryString["status"] == "Cancelled" ? "selected" : "")>Cancelled</option>
+        </select>
+    }
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Penyewa</th>
+                <th>Mobil</th>
+                <th>Plat Nomor</th>
+                <th>Tanggal Sewa</th>
+                <th>Tanggal Kembali</th>
+                <th>Total Hari</th>
+                <th>Total Harga</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rental in Model)
+            {
+                <tr>
+                    <td>@rental.RentalId</td>
+                    <td>
+                        @rental.User.FullName<br/>
+                        <small style="color: #6c757d;">@rental.User.Email</small>
+                    </td>
+                    <td>@rental.Car.CarName</td>
+                    <td>@rental.Car.LicensePlate</td>
+                    <td>@rental.RentalDate.ToString("dd/MM/yyyy")</td>
+                    <td>@rental.ReturnDate.ToString("dd/MM/yyyy")</td>
+                    <td>@rental.TotalDays hari</td>
+                    <td>Rp @string.Format("{0:N0}", rental.TotalPrice)</td>
+                    <td>
+                        @if (rental.Status == "Active")
+                        {
+                            <span class="badge badge-primary">@rental.Status</span>
+                        }
+                        else if (rental.Status == "Completed")
+                        {
+                            <span class="badge badge-success">@rental.Status</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-secondary">@rental.Status</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detail", "RentalDetails", new { id = rental.RentalId }, new { @class = "btn btn-sm btn-info" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <div class="summary">
+        <p><strong>Total Penyewaan:</strong> @Model.Count()</p>
+        <p><strong>Total Pendapatan:</strong> Rp @string.Format("{0:N0}", Model.Sum(r => r.TotalPrice))</p>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>Tidak ada data penyewaan ditemukan.</p>
+    </div>
+}
+
+<style>
+    .filter-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-section label {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    
+    .filter-section select {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+    }
+    
+    .data-table th,
+    .data-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    .data-table th {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .data-table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: #e9ecef;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        margin: 2px;
+    }
+    
+    .btn-info {
+        background-color: #17a2b8;
+        color: white;
+    }
+    
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.9em;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    
+    .badge-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .badge-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .summary {
+        background-color: #e7f3ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        border-left: 4px solid #007bff;
+    }
+    
+    .summary p {
+        margin: 10px 0;
+        font-size: 1.1em;
+    }
+    
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+</style>

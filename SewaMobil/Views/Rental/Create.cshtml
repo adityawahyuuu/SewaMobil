@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Sewa Mobil";
+    var car = ViewBag.Car as SewaMobil.Models.Car;
+}
+
+<h2>Sewa Mobil</h2>
+
+<div class="car-info" style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 5px; background-color: #f8f9fa;">
+    <h3>@car.CarName</h3>
+    
+    @if (!string.IsNullOrEmpty(car.ImageUrl))
+    {
+        <img src="@car.ImageUrl" alt="@car.CarName" style="max-width: 300px; height: auto; border-radius: 5px;" />
+    }
+    
+    <p><strong>Plat Nomor:</strong> @car.LicensePlate</p>
+    <p><strong>Warna:</strong> @car.Color</p>
+    <p><strong>Transmisi:</strong> @car.Transmission</p>
+    <p><strong>Bahan Bakar:</strong> @car.FuelType</p>
+    <p><strong>Kapasitas:</strong> @car.Capacity orang</p>
+    <p><strong>Harga Sewa:</strong> <span class="price">Rp @string.Format("{0:N0}", car.DailyRate) / hari</span></p>
+    
+    @if (!string.IsNullOrEmpty(car.Description))
+    {
+        <p>@car.Description</p>
+    }
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    <input type="hidden" name="carId" value="@car.CarId" />
+
+    <fieldset>
+        <legend>Form Penyewaan</legend>
+
+        <div class="editor-label">
+            <label for="rentalDate">Tanggal Sewa</label>
+        </div>
+        <div class="editor-field">
+            <input type="date" id="rentalDate" name="rentalDate" 
+                   min="@ViewBag.MinDate" 
+                   required 
+                   onchange="calculateTotal()" />
+        </div>
+
+        <div class="editor-label">
+            <label for="returnDate">Tanggal Kembali</label>
+        </div>
+        <div class="editor-field">
+            <input type="date" id="returnDate" name="returnDate" 
+                   min="@ViewBag.MinDate" 
+                   required 
+                   onchange="calculateTotal()" />
+        </div>
+
+        <div class="calculation" style="background-color: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p><strong>Total Hari:</strong> <span id="totalDays">0</span> hari</p>
+            <p><strong>Harga per Hari:</strong> Rp <span id="dailyRate">@string.Format("{0:N0}", car.DailyRate)</span></p>
+            <p style="font-size: 1.2em;"><strong>Total Harga:</strong> <span style="color: #007bff; font-weight: bold;">Rp <span id="totalPrice">0</span></span></p>
+        </div>
+
+        <div class="editor-label">
+            <label for="notes">Catatan (Opsional)</label>
+        </div>
+        <div class="editor-field">
+            <textarea id="notes" name="notes" rows="4" placeholder="Masukkan catatan tambahan jika ada..."></textarea>
+        </div>
+
+        <p>
+            <input type="submit" value="Konfirmasi Penyewaan" class="btn btn-primary" />
+            @Html.ActionLink("Batal", "Index", "Home", null, new { @class = "btn btn-secondary" })
+        </p>
+    </fieldset>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        var dailyRate = @car.DailyRate;
+        
+        function calculateTotal() {
+            var rentalDate = document.getElementById('rentalDate').value;
+            var returnDate = document.getElementById('returnDate').value;
+            
+            if (rentalDate && returnDate) {
+                var rental = new Date(rentalDate);
+                var returnD = new Date(returnDate);
+                
+                if (returnD > rental) {
+                    var diffTime = Math.abs(returnD - rental);
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    var totalPrice = diffDays * dailyRate;
+                    
+                    document.getElementById('totalDays').innerText = diffDays;
+                    document.getElementById('totalPrice').innerText = totalPrice.toLocaleString('id-ID');
+                } else {
+                    document.getElementById('totalDays').innerText = '0';
+                    document.getElementById('totalPrice').innerText = '0';
+                }
+            }
+        }
+    </script>
+}
+
+<style>
+    .price {
+        color: #007bff;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    
+    fieldset {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    legend {
+        padding: 0 10px;
+        font-weight: bold;
+    }
+    
+    .editor-label {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    
+    .editor-field {
+        margin-bottom: 10px;
+    }
+    
+    .editor-field input[type="date"],
+    .editor-field textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+    
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+</style>

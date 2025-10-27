@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Error";
+}
+
+<div class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h2>Oops! Terjadi Kesalahan</h2>
+    <p class="error-message">Maaf, terjadi kesalahan saat memproses permintaan Anda.</p>
+    
+    <div class="error-details">
+        <p>Mohon coba lagi atau hubungi administrator jika masalah terus berlanjut.</p>
+    </div>
+    
+    <div class="action-buttons">
+        @Html.ActionLink("Kembali ke Beranda", "Index", "Home", null, new { @class = "btn btn-primary" })
+        <a href="javascript:history.back()" class="btn btn-secondary">Kembali ke Halaman Sebelumnya</a>
+    </div>
+</div>
+
+<style>
+    .error-container {
+        text-align: center;
+        padding: 60px 20px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .error-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+    
+    .error-container h2 {
+        color: #dc3545;
+        margin-bottom: 15px;
+        font-size: 2em;
+    }
+    
+    .error-message {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .error-details {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 30px 0;
+        color: #721c24;
+    }
+    
+    .error-details p {
+        margin: 0;
+    }
+    
+    .action-buttons {
+        margin-top: 30px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 5px;
+        font-weight: bold;
+        font-size: 1em;
+    }
+    
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>

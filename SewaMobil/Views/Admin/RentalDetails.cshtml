@@ -1,0 +1,137 @@
+﻿@model SewaMobil.Models.Rental
+
+@{
+    ViewBag.Title = "Detail Penyewaan";
+}
+
+<h2>Detail Penyewaan</h2>
+
+@if (Model != null)
+{
+    <div class="rental-details">
+        <table class="detail-table">
+            <tr>
+                <th>ID Penyewaan</th>
+                <td>@Model.RentalId</td>
+            </tr>
+            <tr>
+                <th>Nama Penyewa</th>
+                <td>@Model.User.FullName</td>
+            </tr>
+            <tr>
+                <th>Email Penyewa</th>
+                <td>@Model.User.Email</td>
+            </tr>
+            <tr>
+                <th>Mobil</th>
+                <td>@Model.Car.CarName</td>
+            </tr>
+            <tr>
+                <th>Plat Nomor</th>
+                <td>@Model.Car.LicensePlate</td>
+            </tr>
+            <tr>
+                <th>Tanggal Sewa</th>
+                <td>@Model.RentalDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <th>Tanggal Kembali</th>
+                <td>@Model.ReturnDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <th>Total Hari</th>
+                <td>@Model.TotalDays hari</td>
+            </tr>
+            <tr>
+                <th>Total Harga</th>
+                <td>Rp @string.Format("{0:N0}", Model.TotalPrice)</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    @if (Model.Status == "Active")
+                    {
+                        <span class="badge badge-primary">@Model.Status</span>
+                    }
+                    else if (Model.Status == "Completed")
+                    {
+                        <span class="badge badge-success">@Model.Status</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-secondary">@Model.Status</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>Catatan</th>
+                <td>@Model.Notes</td>
+            </tr>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <p>Data penyewaan tidak ditemukan.</p>
+    </div>
+}
+
+<style>
+    .rental-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .detail-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .detail-table th,
+    .detail-table td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .detail-table th {
+        width: 200px;
+        font-weight: bold;
+        background-color: #007bff;
+        color: white;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+
+    .badge-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+        color: #856404;
+        padding: 15px;
+        border-radius: 5px;
+    }
+</style>

@@ -1,0 +1,148 @@
+﻿@model IEnumerable<SewaMobil.Models.Car>
+
+@{
+    ViewBag.Title = "Beranda - Sewa Mobil";
+}
+
+<h2>Selamat Datang di Aplikasi Sewa Mobil</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-error">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="hero-section" style="background-color: #f8f9fa; padding: 20px; margin-bottom: 30px; border-radius: 5px;">
+    <h3>Mobil Tersedia untuk Disewa</h3>
+    <p>Pilih mobil impian Anda dan nikmati perjalanan yang nyaman!</p>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="car-grid">
+        @foreach (var car in Model)
+        {
+            <div class="car-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+                @if (!string.IsNullOrEmpty(car.ImageUrl))
+                {
+                    <img src="@car.ImageUrl" alt="@car.CarName" style="max-width: 100%; height: auto; border-radius: 5px;" />
+                }
+                else
+                {
+                    <div style="background-color: #e9ecef; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                        <span style="color: #6c757d;">No Image</span>
+                    </div>
+                }
+                
+                <h3>@car.CarName</h3>
+                <p><strong>Plat Nomor:</strong> @car.LicensePlate</p>
+                <p><strong>Warna:</strong> @car.Color</p>
+                <p><strong>Transmisi:</strong> @car.Transmission</p>
+                <p><strong>Bahan Bakar:</strong> @car.FuelType</p>
+                <p><strong>Kapasitas:</strong> @car.Capacity orang</p>
+                <p><strong>Harga Sewa:</strong> Rp @string.Format("{0:N0}", car.DailyRate) / hari</p>
+                
+                @if (!string.IsNullOrEmpty(car.Description))
+                {
+                    <p style="color: #666;">@car.Description</p>
+                }
+                
+                <p><span class="badge badge-success">@car.Status</span></p>
+                
+                @if (Session["UserId"] != null)
+                {
+                    @Html.ActionLink("Sewa Mobil Ini", "Create", "Rental", new { id = car.CarId }, new { @class = "btn btn-primary" })
+                }
+                else
+                {
+                    @Html.ActionLink("Login untuk Menyewa", "Login", "Account", null, new { @class = "btn btn-primary" })
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>Maaf, saat ini tidak ada mobil yang tersedia untuk disewa.</p>
+    </div>
+}
+
+<style>
+    .car-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .car-card {
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .car-card h3 {
+        margin-top: 10px;
+        color: #333;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+    }
+    
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    
+    .alert-error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+</style>

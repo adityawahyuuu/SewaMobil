@@ -1,0 +1,236 @@
+﻿@model SewaMobil.Models.Rental
+
+@{
+    ViewBag.Title = "Pengembalian Mobil";
+}
+
+<h2>Pengembalian Mobil</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-error">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="info-box">
+    <p>Anda akan mengembalikan mobil berikut. Pastikan mobil dalam kondisi baik sebelum mengembalikan.</p>
+</div>
+
+<div class="rental-summary">
+    <h3>Informasi Penyewaan</h3>
+    <table class="summary-table">
+        <tr>
+            <th>ID Rental:</th>
+            <td>@Model.RentalId</td>
+        </tr>
+        <tr>
+            <th>Mobil:</th>
+            <td>@Model.Car.CarName (@Model.Car.LicensePlate)</td>
+        </tr>
+        <tr>
+            <th>Tanggal Sewa:</th>
+            <td>@Model.RentalDate.ToString("dd MMMM yyyy")</td>
+        </tr>
+        <tr>
+            <th>Tanggal Seharusnya Kembali:</th>
+            <td>@Model.ReturnDate.ToString("dd MMMM yyyy")</td>
+        </tr>
+        <tr>
+            <th>Total Hari Sewa:</th>
+            <td>@Model.TotalDays hari</td>
+        </tr>
+        <tr>
+            <th>Total Harga:</th>
+            <td><strong style="color: #007bff;">Rp @string.Format("{0:N0}", Model.TotalPrice)</strong></td>
+        </tr>
+        @if (Model.ReturnDate < DateTime.Now.Date)
+        {
+            <tr>
+                <th>Status:</th>
+                <td><span style="color: #dc3545; font-weight: bold;">⚠️ Terlambat @((DateTime.Now.Date - Model.ReturnDate).Days) hari</span></td>
+            </tr>
+        }
+    </table>
+</div>
+
+@using (Html.BeginForm("Return", "Rental", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.RentalId)
+    
+    <fieldset>
+        <legend>Konfirmasi Pengembalian</legend>
+        
+        <div class="editor-label">
+            <label for="notes">Catatan Pengembalian (Opsional)</label>
+        </div>
+        <div class="editor-field">
+            <textarea id="notes" name="notes" rows="4" 
+                      placeholder="Kondisi mobil, kilo meter, atau catatan lainnya..."></textarea>
+        </div>
+        
+        <div class="warning-box">
+            <p><strong>⚠️ Perhatian:</strong></p>
+            <ul>
+                <li>Pastikan mobil dikembalikan dalam kondisi yang sama seperti saat disewa</li>
+                <li>Periksa kelengkapan dokumen dan perlengkapan mobil</li>
+                <li>Setelah dikonfirmasi, status penyewaan tidak dapat diubah kembali</li>
+                @if (Model.ReturnDate < DateTime.Now.Date)
+                {
+                    <li style="color: #dc3545; font-weight: bold;">Mobil dikembalikan terlambat, mungkin ada biaya tambahan</li>
+                }
+            </ul>
+        </div>
+        
+        <p>
+            <button type="submit" class="btn btn-success" onclick="return confirm('Apakah Anda yakin ingin mengembalikan mobil ini?');">
+                ✓ Konfirmasi Pengembalian
+            </button>
+            @Html.ActionLink("Batal", "Details", new { id = Model.RentalId }, new { @class = "btn btn-secondary" })
+        </p>
+    </fieldset>
+}
+
+<style>
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+    
+    .alert-error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .info-box {
+        background-color: #d1ecf1;
+        border-left: 4px solid #17a2b8;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    
+    .rental-summary {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
+    
+    .rental-summary h3 {
+        margin-top: 0;
+        color: #007bff;
+    }
+    
+    .summary-table {
+        width: 100%;
+        margin-top: 15px;
+    }
+    
+    .summary-table th {
+        text-align: left;
+        padding: 10px;
+        font-weight: bold;
+        width: 40%;
+        vertical-align: top;
+    }
+    
+    .summary-table td {
+        padding: 10px;
+        vertical-align: top;
+    }
+    
+    fieldset {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    legend {
+        padding: 0 10px;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .editor-label {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    
+    .editor-field {
+        margin-bottom: 15px;
+    }
+    
+    .editor-field textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        resize: vertical;
+    }
+    
+    .editor-field textarea:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+    
+    .warning-box {
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+    
+    .warning-box p {
+        margin: 0 0 10px 0;
+    }
+    
+    .warning-box ul {
+        margin: 10px 0 0 20px;
+        padding: 0;
+    }
+    
+    .warning-box li {
+        margin-bottom: 5px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        margin-right: 10px;
+        font-size: 1em;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>

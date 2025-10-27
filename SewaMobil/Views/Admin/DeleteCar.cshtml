@@ -1,0 +1,192 @@
+﻿@model SewaMobil.Models.Car
+
+@{
+    ViewBag.Title = "Hapus Mobil";
+}
+
+<h2>Hapus Mobil</h2>
+
+<div class="warning-box">
+    <h3>⚠️ Konfirmasi Penghapusan</h3>
+    <p>Apakah Anda yakin ingin menghapus mobil berikut?</p>
+</div>
+
+<div class="car-details">
+    <h3>Detail Mobil</h3>
+    
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" alt="@Model.CarName" style="max-width: 300px; height: auto; border-radius: 5px; margin-bottom: 15px;" />
+    }
+    
+    <table class="detail-table">
+        <tr>
+            <th>ID Mobil:</th>
+            <td>@Model.CarId</td>
+        </tr>
+        <tr>
+            <th>Nama Mobil:</th>
+            <td><strong>@Model.CarName</strong></td>
+        </tr>
+        <tr>
+            <th>Plat Nomor:</th>
+            <td>@Model.LicensePlate</td>
+        </tr>
+        <tr>
+            <th>Warna:</th>
+            <td>@Model.Color</td>
+        </tr>
+        <tr>
+            <th>Transmisi:</th>
+            <td>@Model.Transmission</td>
+        </tr>
+        <tr>
+            <th>Bahan Bakar:</th>
+            <td>@Model.FuelType</td>
+        </tr>
+        <tr>
+            <th>Kapasitas:</th>
+            <td>@Model.Capacity orang</td>
+        </tr>
+        <tr>
+            <th>Harga Sewa/Hari:</th>
+            <td>Rp @string.Format("{0:N0}", Model.DailyRate)</td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td>
+                @if (Model.Status == "Tersedia")
+                {
+                    <span class="badge badge-success">@Model.Status</span>
+                }
+                else
+                {
+                    <span class="badge badge-danger">@Model.Status</span>
+                }
+            </td>
+        </tr>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <tr>
+                <th>Deskripsi:</th>
+                <td>@Model.Description</td>
+            </tr>
+        }
+    </table>
+</div>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    
+    <div class="action-buttons">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda YAKIN ingin menghapus mobil ini? Data tidak dapat dikembalikan!');">
+            🗑️ Ya, Hapus Mobil
+        </button>
+        @Html.ActionLink("Batal", "Cars", null, new { @class = "btn btn-secondary" })
+    </div>
+}
+
+<style>
+    .warning-box {
+        background-color: #fff3cd;
+        border: 2px solid #ffc107;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+    
+    .warning-box h3 {
+        margin-top: 0;
+        color: #856404;
+    }
+    
+    .car-details {
+        background-color: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-bottom: 25px;
+    }
+    
+    .car-details h3 {
+        margin-top: 0;
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+    }
+    
+    .detail-table {
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .detail-table th {
+        text-align: left;
+        padding: 12px;
+        font-weight: bold;
+        width: 35%;
+        background-color: #e9ecef;
+    }
+    
+    .detail-table td {
+        padding: 12px;
+        background-color: white;
+    }
+    
+    .detail-table tr {
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .action-buttons {
+        text-align: center;
+        padding: 20px 0;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        margin: 5px;
+        font-size: 1em;
+        font-weight: bold;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>
